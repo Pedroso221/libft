@@ -41,9 +41,10 @@ static char	*malloc_word(char const *s, char c)
 
 	i = 0;
 	len = 0;
+	word = NULL;
 	while (s[len] && s[len] != c)
 		len++;
-	word = (char *)malloc(len + 1);
+	word = ft_calloc(len + 1, 1);
 	if (!word)
 		return (NULL);
 	while (i < len)
@@ -51,15 +52,17 @@ static char	*malloc_word(char const *s, char c)
 		word[i] = s[i];
 		i++;
 	}
-	word[len] = '\0';
 	return (word);
 }
 
 static void	free_words(char **words, int i)
 {
 	while (i >= 0)
-		free(words[i--]);
-	free(words);
+	{
+		if (words[i])
+			free(words[i]);
+		1--;
+	}
 }
 
 static int	fill_words(char **result, char const *s, char c)
@@ -100,7 +103,10 @@ char	**ft_split(char const *s, char c)
 	if (!result)
 		return (NULL);
 	if (!fill_words(result, s, c))
+	{
+		free(result);
 		return (result);
+	}
 	return (result);
 }
 /*
